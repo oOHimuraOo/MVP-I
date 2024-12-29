@@ -1,0 +1,83 @@
+[gd_scene load_steps=8 format=3 uid="uid://brmoocwlmhf74"]
+
+[ext_resource type="Script" path="res://CsgBox3d2.cs" id="1_cmh6f"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4kfiy"]
+albedo_color = Color(1, 1, 0.494118, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_imjvk"]
+radius = 1.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_re3b1"]
+albedo_color = Color(0.482353, 1, 1, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_x5ynu"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j4vpf"]
+albedo_color = Color(1, 0.537255, 1, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_k3xij"]
+size = Vector3(1, 0.5, 2.5)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Piso" type="CSGBox3D" parent="."]
+size = Vector3(15, 0.1, 15)
+
+[node name="Personagem" type="CSGBox3D" parent="." node_paths=PackedStringArray("bola", "carta", "camera", "marker", "temporizador")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.63818, 0)
+material = SubResource("StandardMaterial3D_4kfiy")
+script = ExtResource("1_cmh6f")
+bola = NodePath("../Bola")
+carta = NodePath("../Carta")
+camera = NodePath("Marker3D/Camera3D")
+marker = NodePath("Marker3D")
+temporizador = NodePath("Timer")
+
+[node name="Area3D" type="Area3D" parent="Personagem"]
+collision_layer = 0
+collision_mask = 6
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Personagem/Area3D"]
+shape = SubResource("SphereShape3D_imjvk")
+
+[node name="Timer" type="Timer" parent="Personagem"]
+one_shot = true
+
+[node name="Marker3D" type="Marker3D" parent="Personagem"]
+
+[node name="Camera3D" type="Camera3D" parent="Personagem/Marker3D"]
+transform = Transform3D(-4.37114e-08, 0.258819, -0.965926, 0, 0.965926, 0.258819, 1, 1.13133e-08, -4.2222e-08, -5, 2.36182, 0.955)
+fov = 90.0
+near = 0.001
+
+[node name="Bola" type="CSGSphere3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.00905, 0.632841, 0)
+material = SubResource("StandardMaterial3D_re3b1")
+
+[node name="Area3D" type="Area3D" parent="Bola"]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Bola/Area3D"]
+shape = SubResource("SphereShape3D_x5ynu")
+
+[node name="Carta" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.793, 1.144, 4.025)
+size = Vector3(1, 0.01, 2.477)
+material = SubResource("StandardMaterial3D_j4vpf")
+
+[node name="Area3D" type="Area3D" parent="Carta"]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Carta/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.23877, -0.000335693)
+shape = SubResource("BoxShape3D_k3xij")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0.258819, -0.965926, 0, 0.965926, 0.258819, 1, 1.13133e-08, -4.2222e-08, -5, 4.069, 0)
+
+[connection signal="area_entered" from="Personagem/Area3D" to="Personagem" method="_on_area_3d_area_entered"]
+[connection signal="area_exited" from="Personagem/Area3D" to="Personagem" method="_on_area_3d_area_exited"]
+[connection signal="timeout" from="Personagem/Timer" to="Personagem" method="_on_timer_timeout"]
